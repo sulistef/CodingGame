@@ -3,11 +3,6 @@
  * the standard input according to the problem statement.
  **/
 
-// WORK IN PROGRESS
-// WORK IN PROGRESS
-// WORK IN PROGRESS
-// WORK IN PROGRESS
-
 const N = 14;
 const R = 6;
 // const prize = [13, 12, 11, 9, 16, 17, 100];
@@ -36,75 +31,21 @@ const prize = [
 //   return prize;
 // };
 
-console.error("N: ", N);
-console.error("R: ", R);
 // const prize: number[] = createPrize();
 
-const sommeTableau = (tableau: number[]) =>
-  tableau.reduce((mem, valeur) =>
-    mem + valeur
-    , 0);
+let memo = {};
 
+const prix = (index: number, days: number) => {
+  if (index === N) return 0;
 
-const bestSommeTableau = (tableau: number[], R: number) => {
-  let bestSomme = -1;
-  let bestPosition = -1;
-  let somme = -1;
-
-  for (let i = 0; i <= tableau.length - R; i++) {
-    somme = sommeTableau(tableau.slice(i, i + R));
-    if (somme > bestSomme) {
-      bestSomme = somme;
-      bestPosition = i;
-    };
+  if (memo[index.toString() + '-' + days.toString()]) {
+    return memo[index.toString() + '-' + days.toString()];
+  } else {
+    const a = days === 0 ? 0 : prize[index] + prix(index + 1, days - 1);
+    const b = prix(index + 1, R);
+    memo[index.toString() + '-' + days.toString()] = a > b ? a : b;
   };
-
-  return [bestSomme, bestPosition];
-};
-
-const bestPlan = (tableau: number[], R: number, S: number) => {
-  if (tableau.length === 0) return 0;
-  if (tableau.length === 1) return tableau[0];
-
-  const valeur = bestSommeTableau(tableau, S);
-
-  // console.log("tableau: ", tableau);
-  // console.log("valeur", valeur);
-  // console.log("tab gauche", tableau.slice(0, valeur[1] - 1));
-  // console.log("tab droite", tableau.slice(valeur[1] + R + 1, tableau.length));
-  // console.log('-----------------------------------')
-
-  const gauche = valeur[1] - 1 < 0 ? 0 : valeur[1] - 1;
-  const droite = valeur[1] + S + 1;
-
-  let sommeG = -1;
-  let supersommeG = -1;
-
-  let sommeD = -1;
-  let supersommeD = -1;
-
-  for (let i = 1; i <= R; i++) {
-    sommeG = bestPlan(tableau.slice(0, gauche), R, i);
-    sommeD = bestPlan(tableau.slice(droite, tableau.length), R, i);
-    if (sommeG > supersommeG) supersommeG = sommeG;
-    if (sommeD > supersommeD) supersommeD = sommeD;
-  };
-
-  return supersommeG + valeur[0] + supersommeD;
-};
-
-const superplan = (tableau: number[], R: number) => {
-
-  let somme = -1;
-  let bestSomme = -1;
-
-  for (let i = 1; i <= R; i++) {
-    somme = bestPlan(tableau, R, i);
-    if (somme > bestSomme) bestSomme = somme;
-  };
-
-  return bestSomme;
+  return memo[index.toString() + '-' + days.toString()];
 }
 
-// console.log(bestSommeTableau(prize, R))
-console.log(superplan(prize, R));
+console.log(prix(0, R));
