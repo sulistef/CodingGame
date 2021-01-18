@@ -41,8 +41,8 @@ const prix = (index: number, days: number) => {
   if (memo[index.toString() + '-' + days.toString()]) {
     return memo[index.toString() + '-' + days.toString()];
   } else {
-    const a = days === 0 ? 0 : prize[index] + prix(index + 1, days - 1);
-    const b = prix(index + 1, R);
+    const a: number = days === 0 ? 0 : prize[index] + prix(index + 1, days - 1);
+    const b: number = prix(index + 1, R);
     memo[index.toString() + '-' + days.toString()] = a > b ? a : b;
   };
   return memo[index.toString() + '-' + days.toString()];
