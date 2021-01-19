@@ -17,41 +17,53 @@
 // 1 3 1 1 2 2 2 1
 // 1 1 1 3 2 1 3 2 1 1
 
+const R = 1;
+const L = 6;
+
 const interprete = (suite: string): string => {
-  const tableau = suite.split(' ');
+
+  let tableau: string[];
+
+  if (suite.length === 1) {
+    tableau = [suite];
+  } else {
+    tableau = suite.split(' ');
+  }
 
   let compteur: number = 1;
-  // let memo = parseInt(tableau[0]);
   let solution: string = '';
 
-  for (let i = 1; i <= tableau.length; i++) {
-    //console.error('i: ', i);
-    //console.error('memo: ', memo);
-    //console.error('tableau: ', tableau[i]);
-    //console.error('compteur: ', compteur);
-    //console.error('solution: ', solution);
-    //console.error('-------------------')
+  if (tableau.length === 1) return '1 ' + suite;
 
-    if (parseInt(tableau[i]) === parseInt(tableau[i - 1])) {
-      compteur++;
-    } else if (i < tableau.length - 1) {
-      solution = solution + compteur + ' ' + tableau[i - 1] + ' ';
-      // memo = parseInt(tableau[i]);
-      compteur = 1;
-    } else if (i === tableau.length - 1) {
+  for (let i = 1; i < tableau.length; i++) {
+    if (i === tableau.length - 1) {
       if (parseInt(tableau[i]) === parseInt(tableau[i - 1])) {
         compteur++;
         solution = solution + compteur + ' ' + tableau[i - 1];
       } else {
         solution = solution + compteur + ' ' + tableau[i - 1] + ' ' + '1' + ' ' + tableau[i];
       }
+    } else if (parseInt(tableau[i]) === parseInt(tableau[i - 1]) && i < tableau.length - 1) {
+      compteur++;
+    } else {
+      solution = solution + compteur + ' ' + tableau[i - 1] + ' ';
+      compteur = 1;
     }
   }
 
   return solution;
 };
 
-console.error("test", interprete('1 2 1 1'));
-console.error("test", interprete('1 1 1 2 2 1'));
+const conway = (
+  start: number,
+  rang: number
+) => {
+  let memoire: string = start.toString();
+  for (let i = 2; i <= rang; i++) {
+    memoire = interprete(memoire);
+  }
 
-console.log('answer');
+  return memoire;
+}
+
+console.log(conway(R, L));
